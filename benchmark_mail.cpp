@@ -108,15 +108,17 @@ int main(int argc, const char* argv[]) {
             auto start = std::chrono::high_resolution_clock::now();
             for (int it = 0; it < 100; it++) benchs[key]();
             auto stop       = std::chrono::high_resolution_clock::now();
-            results[key][r] = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count();
+            results[key][r] = std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count() / 100;
         }
     }
 
+    constexpr char sep = ',';
+    std::cout << "engine" << sep << "average[us]" << sep << "min[us]" << sep << "max[us]" << sep << "deviation[%]"
+              << sep << "runs[us]\n";
     for (auto& key : keys) {
         auto res      = std::accumulate(results[key].cbegin(), results[key].cend(), 1) / N;
         auto [mi, ma] = std::minmax_element(results[key].cbegin(), results[key].cend());
-        std::cout << key << " avg " << res << "ms min " << *mi << "ms max " << *ma << "ms ci "
-                  << (100 * (*ma - *mi)) / res << "% ";
+        std::cout << key << sep << res << sep << *mi << sep << *ma << sep << (100 * (*ma - *mi)) / res << sep;
         for (auto v : results[key]) std::cout << v << " ";
         std::cout << "\n";
     }
