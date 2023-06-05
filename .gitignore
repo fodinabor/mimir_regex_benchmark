@@ -1,0 +1,6 @@
+addresses.txt
+annotated.txt
+*.o
+*.ll
+benchmark_mail
+build

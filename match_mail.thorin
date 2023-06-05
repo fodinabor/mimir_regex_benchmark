@@ -1,0 +1,36 @@
+.import mem;
+.import core;
+.plugin regex;
+.plugin direct;
+
+.let I8 = .Idx 256;
+.let _32 = 4294967296;
+.let I32 = .Idx _32;
+.let Top = ⊤:.Nat;
+
+// ==> [a-zA-Z0-9](?:[a-zA-Z0-9]*[._\-]+[a-zA-Z0-9])*[a-zA-Z0-9]*@[a-zA-Z0-9](?:[a-zA-Z0-9]*[_\-]+[a-zA-Z0-9])*[a-zA-Z0-9]*\.(?:(?:[a-zA-Z0-9]*[_\-]+[a-zA-Z0-9])*[a-zA-Z0-9]+\.)*[a-zA-Z]+$
+.let letterOrDigit = %regex.disj 3 (%regex.range ('0','9'), %regex.range ('a','z'), %regex.range ('A','Z'));
+.let letter = %regex.disj 2 (%regex.range ('a','z'), %regex.range ('A','Z'));
+.let re = %regex.conj 11 (letterOrDigit,
+            %regex.quant.zeroOrMore (%regex.conj 3 (%regex.quant.zeroOrMore letterOrDigit, %regex.quant.oneOrMore (%regex.disj 3 (%regex.lit '.', %regex.lit '_', %regex.lit '-')), letterOrDigit)),
+            %regex.quant.zeroOrMore letterOrDigit,
+            %regex.lit '@',
+            letterOrDigit,
+            %regex.quant.zeroOrMore (%regex.conj 3 (%regex.quant.zeroOrMore letterOrDigit, %regex.quant.oneOrMore (%regex.disj 2 (%regex.lit '_', %regex.lit '-')), letterOrDigit)),
+            %regex.quant.zeroOrMore letterOrDigit,
+            %regex.lit '.',
+            %regex.quant.zeroOrMore (%regex.conj 3 (
+                            %regex.quant.zeroOrMore (%regex.conj 3 (%regex.quant.zeroOrMore letterOrDigit, %regex.quant.oneOrMore (%regex.disj 2 (%regex.lit '_', %regex.lit '-')), letterOrDigit)),
+                            %regex.quant.oneOrMore letterOrDigit, %regex.lit '.')),
+            letter,
+            %regex.quant.oneOrMore letter);
+
+.con strlen[%mem.M, %mem.Ptr («⊤:.Nat; %core.I8», 0), .Cn [%mem.M, %core.I32]];
+
+.con .extern match[mem: %mem.M, to_match: %mem.Ptr («⊤:.Nat; .Idx 256», 0), exit : .Cn [%mem.M, .Idx 2]] = {
+    .let (`mem, matched, pos) = re Top (mem, to_match, 0:(.Idx Top));
+    .con exit_me(mem: %mem.M, len: %core.I32) = {
+        exit (mem, %core.icmp.e (%core.wrap.sub _32 (len, %core.conv.u _32 pos), 0:I32))
+    };
+    strlen(mem, to_match, exit_me)
+};
