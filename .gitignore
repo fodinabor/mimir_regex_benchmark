@@ -4,3 +4,4 @@ annotated.txt
 *.ll
 benchmark_mail
 build
+.cache

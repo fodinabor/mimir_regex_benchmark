@@ -67,13 +67,13 @@ int main(int argc, const char* argv[]) {
     benchs["thorin"] = [&]() {
         for (int i = 0, e = emails.size(); i < e; ++i)
             if (match(emails[i].c_str()) != isValid[i])
-                std::cout << "did wrongly (not) match " << emails[i] << "," << std::boolalpha << isValid[i] << "\n";
+                std::cout << "thorin did wrongly (not) match " << emails[i] << "," << std::boolalpha << isValid[i] << "\n";
     };
 
     benchs["manual"] = [&]() {
         for (int i = 0, e = emails.size(); i < e; ++i)
             if (match_manual(emails[i].c_str()) != isValid[i])
-                std::cout << "did wrongly (not) match " << emails[i] << "," << std::boolalpha << isValid[i] << "\n";
+                std::cout << "manual did wrongly (not) match " << emails[i] << "," << std::boolalpha << isValid[i] << "\n";
     };
 
     benchs["ctre"] = [&]() {
