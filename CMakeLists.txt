@@ -28,6 +28,7 @@ add_executable(${PROJECT_NAME}
     ctre_match_mail.cpp
     pcre2_match_mail.cpp
     std_match_mail.cpp
+    manual_match_mail.cpp
     ${CMAKE_BINARY_DIR}/thorin_match.o
 )
 

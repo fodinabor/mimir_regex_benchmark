@@ -15,6 +15,7 @@
 
 extern "C" bool match(const char* mail);
 extern "C" bool match_ctre(const char* mail);
+extern "C" bool match_manual(const char* mail);
 extern "C" bool match_std(const char* mail);
 extern "C" bool match_pcre2(const char* mail);
 extern "C" bool match_jit_pcre2(const char* mail);
@@ -38,8 +39,13 @@ bool stob(std::string s, bool throw_on_error = true) {
 }
 
 int main(int argc, const char* argv[]) {
-    std::string filename = "annotated.txt";
-    if (argc > 1) filename = argv[1];
+    std::string filename;
+    if (argc > 1) {
+        filename = argv[1];
+    } else {
+        filename = "annotated.txt";
+        if (std::ifstream{filename}.fail()) filename = "../annotated.txt";
+    }
 
     std::ifstream ifs{filename};
     if (!ifs) {
@@ -61,6 +67,12 @@ int main(int argc, const char* argv[]) {
     benchs["thorin"] = [&]() {
         for (int i = 0, e = emails.size(); i < e; ++i)
             if (match(emails[i].c_str()) != isValid[i])
+                std::cout << "did wrongly (not) match " << emails[i] << "," << std::boolalpha << isValid[i] << "\n";
+    };
+
+    benchs["manual"] = [&]() {
+        for (int i = 0, e = emails.size(); i < e; ++i)
+            if (match_manual(emails[i].c_str()) != isValid[i])
                 std::cout << "did wrongly (not) match " << emails[i] << "," << std::boolalpha << isValid[i] << "\n";
     };
 
