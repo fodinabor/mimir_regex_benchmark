@@ -15,12 +15,12 @@ The to-be-matched regex is:
 ### Init Submodules & Build
 ```sh
 git submodule update --init --recursive
-mkdir build && mkdir -p thorin/build && cd thorin/build
-cmake .. -DCMAKE_BUILD_TYPE=Release -DTHORIN_BUILD_TESTING=OFF -DTHORIN_INSTALL_DEPENNDENCIES=ON -DCMAKE_CXX_COMPILER=g++ -DCMAKE_C_COMPILER=gcc -DCMAKE_INSTALL_PREFIX=`pwd`/install
+mkdir -p build && mkdir -p thorin2/build && cd thorin2/build
+cmake .. -DCMAKE_BUILD_TYPE=Release -DTHORIN_BUILD_TESTING=OFF -DTHORIN_INSTALL_DEPENDENCIES=ON -DCMAKE_CXX_COMPILER=g++ -DCMAKE_C_COMPILER=gcc -DCMAKE_INSTALL_PREFIX=`pwd`/install
 make -j`nproc` install
 cd ../../build
 cmake .. -DCMAKE_BUILD_TYPE=Release -DThorin_DIR=`pwd`/../thorin2/build/install/lib/cmake/thorin -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang
-make -j`nproc` install
+make -j`nproc`
 ```
 
 ### Dataset

@@ -8,22 +8,22 @@
 .let I32 = .Idx _32;
 .let Top = ⊤:.Nat;
 
-// ==> [a-zA-Z0-9](?:[a-zA-Z0-9]*[._\-]+[a-zA-Z0-9])*[a-zA-Z0-9]*@[a-zA-Z0-9](?:[a-zA-Z0-9]*[_\-]+[a-zA-Z0-9])*[a-zA-Z0-9]*\.(?:(?:[a-zA-Z0-9]*[_\-]+[a-zA-Z0-9])*[a-zA-Z0-9]+\.)*[a-zA-Z]+$
+// ==> ^[a-zA-Z0-9](?:[a-zA-Z0-9]*[._\-]+[a-zA-Z0-9])*[a-zA-Z0-9]*@[a-zA-Z0-9](?:[a-zA-Z0-9]*[_\-]+[a-zA-Z0-9])*[a-zA-Z0-9]*\.(?:(?:[a-zA-Z0-9]*[_\-]+[a-zA-Z0-9])*[a-zA-Z0-9]+\.)*[a-zA-Z]+$
 .let letterOrDigit = %regex.disj 3 (%regex.range ('0','9'), %regex.range ('a','z'), %regex.range ('A','Z'));
 .let letter = %regex.disj 2 (%regex.range ('a','z'), %regex.range ('A','Z'));
 .let re = %regex.conj 11 (letterOrDigit,
-            %regex.quant.zeroOrMore (%regex.conj 3 (%regex.quant.zeroOrMore letterOrDigit, %regex.quant.oneOrMore (%regex.disj 3 (%regex.lit '.', %regex.lit '_', %regex.lit '-')), letterOrDigit)),
-            %regex.quant.zeroOrMore letterOrDigit,
+            %regex.quant.star (%regex.conj 3 (%regex.quant.star letterOrDigit, %regex.quant.plus (%regex.disj 3 (%regex.lit '.', %regex.lit '_', %regex.lit '-')), letterOrDigit)),
+            %regex.quant.star letterOrDigit,
             %regex.lit '@',
             letterOrDigit,
-            %regex.quant.zeroOrMore (%regex.conj 3 (%regex.quant.zeroOrMore letterOrDigit, %regex.quant.oneOrMore (%regex.disj 2 (%regex.lit '_', %regex.lit '-')), letterOrDigit)),
-            %regex.quant.zeroOrMore letterOrDigit,
+            %regex.quant.star (%regex.conj 3 (%regex.quant.star letterOrDigit, %regex.quant.plus (%regex.disj 2 (%regex.lit '_', %regex.lit '-')), letterOrDigit)),
+            %regex.quant.star letterOrDigit,
             %regex.lit '.',
-            %regex.quant.zeroOrMore (%regex.conj 3 (
-                            %regex.quant.zeroOrMore (%regex.conj 3 (%regex.quant.zeroOrMore letterOrDigit, %regex.quant.oneOrMore (%regex.disj 2 (%regex.lit '_', %regex.lit '-')), letterOrDigit)),
-                            %regex.quant.oneOrMore letterOrDigit, %regex.lit '.')),
+            %regex.quant.star (%regex.conj 3 (
+                            %regex.quant.star (%regex.conj 3 (%regex.quant.star letterOrDigit, %regex.quant.plus (%regex.disj 2 (%regex.lit '_', %regex.lit '-')), letterOrDigit)),
+                            %regex.quant.plus letterOrDigit, %regex.lit '.')),
             letter,
-            %regex.quant.oneOrMore letter);
+            %regex.quant.plus letter);
 
 .con strlen[%mem.M, %mem.Ptr («⊤:.Nat; %core.I8», 0), .Cn [%mem.M, %core.I32]];
 
