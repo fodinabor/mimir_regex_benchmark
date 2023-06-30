@@ -137,9 +137,10 @@ int main(int argc, const char* argv[]) {
     for (auto& key : keys) {
         auto res      = std::accumulate(results[key].cbegin(), results[key].cend(), 1) / (N * InnerN);
         auto [mi, ma] = std::minmax_element(results[key].cbegin(), results[key].cend());
-        std::cout << key << sep << res << sep << *mi << sep << *ma << sep << (100 * (*ma - *mi)) / res << sep;
-        for (auto v : results[key]) std::cout << v << " ";
-        std::cout << "\n";
+        std::cout << key << sep << res << sep << *mi << sep << *ma << sep << (100 * (*ma - *mi)) / res << sep << "\n";
+        std::cerr << key << sep << res << sep << *mi << sep << *ma << sep << (100 * (*ma - *mi)) / res << sep;
+        for (auto v : results[key]) std::cerr << v << " ";
+        std::cerr << "\n";
     }
 
     return 0;
