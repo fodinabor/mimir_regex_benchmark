@@ -134,6 +134,8 @@ int main(int argc, const char* argv[]) {
     constexpr char sep = ',';
     std::cout << "engine" << sep << "average[us]" << sep << "min[us]" << sep << "max[us]" << sep << "deviation[%]"
               << sep << "runs[us]\n";
+    std::cerr << "engine" << sep << "average[us]" << sep << "min[us]" << sep << "max[us]" << sep << "deviation[%]"
+              << sep << "runs[us]\n";
     for (auto& key : keys) {
         auto res      = std::accumulate(results[key].cbegin(), results[key].cend(), 1) / (N * InnerN);
         auto [mi, ma] = std::minmax_element(results[key].cbegin(), results[key].cend());
