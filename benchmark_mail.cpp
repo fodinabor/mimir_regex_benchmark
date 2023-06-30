@@ -67,13 +67,15 @@ int main(int argc, const char* argv[]) {
     benchs["thorin"] = [&]() {
         for (int i = 0, e = emails.size(); i < e; ++i)
             if (match(emails[i].c_str()) != isValid[i])
-                std::cout << "thorin did wrongly (not) match " << emails[i] << "," << std::boolalpha << isValid[i] << "\n";
+                std::cout << "thorin did wrongly (not) match " << emails[i] << "," << std::boolalpha << isValid[i]
+                          << "\n";
     };
 
     benchs["manual"] = [&]() {
         for (int i = 0, e = emails.size(); i < e; ++i)
             if (match_manual(emails[i].c_str()) != isValid[i])
-                std::cout << "manual did wrongly (not) match " << emails[i] << "," << std::boolalpha << isValid[i] << "\n";
+                std::cout << "manual did wrongly (not) match " << emails[i] << "," << std::boolalpha << isValid[i]
+                          << "\n";
     };
 
     benchs["ctre"] = [&]() {
@@ -103,8 +105,9 @@ int main(int argc, const char* argv[]) {
                           << "\n";
     };
 
-    constexpr int N = 10;
-    std::map<std::string, std::array<unsigned long, N>> results;
+    constexpr int N      = 10;
+    constexpr int InnerN = 100;
+    std::map<std::string, std::array<unsigned long, InnerN*N>> results;
     std::vector<std::string> keys;
     std::transform(benchs.begin(), benchs.end(), std::back_inserter(keys), [](auto kv) { return kv.first; });
     std::random_device rd;
@@ -113,14 +116,18 @@ int main(int argc, const char* argv[]) {
     for (int r = 0; r < N; ++r) {
         std::shuffle(keys.begin(), keys.end(), g);
         for (auto& key : keys) {
+            auto* counters = results[key].data() + r*InnerN;
+            const auto &bench = benchs[key];
             // warmup..
-            for (int it = 0; it < 100; ++it) benchs[key]();
+            for (int it = 0; it < InnerN; ++it) bench();
 
             // actual measuring
-            auto start = std::chrono::high_resolution_clock::now();
-            for (int it = 0; it < 100; it++) benchs[key]();
-            auto stop       = std::chrono::high_resolution_clock::now();
-            results[key][r] = std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count() / 100;
+            for (int it = 0; it < InnerN; it++) {
+                auto start = std::chrono::high_resolution_clock::now();
+                bench();
+                auto stop    = std::chrono::high_resolution_clock::now();
+                counters[it] = std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count();
+            }
         }
     }
 
@@ -128,7 +135,7 @@ int main(int argc, const char* argv[]) {
     std::cout << "engine" << sep << "average[us]" << sep << "min[us]" << sep << "max[us]" << sep << "deviation[%]"
               << sep << "runs[us]\n";
     for (auto& key : keys) {
-        auto res      = std::accumulate(results[key].cbegin(), results[key].cend(), 1) / N;
+        auto res      = std::accumulate(results[key].cbegin(), results[key].cend(), 1) / (N * InnerN);
         auto [mi, ma] = std::minmax_element(results[key].cbegin(), results[key].cend());
         std::cout << key << sep << res << sep << *mi << sep << *ma << sep << (100 * (*ma - *mi)) / res << sep;
         for (auto v : results[key]) std::cout << v << " ";
