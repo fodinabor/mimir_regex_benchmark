@@ -33,7 +33,7 @@ python3 annotate_matched.py
 ## Benchmark
 To run the benchmark, provide the benchmark executable with the path to the dataset file:
 ```sh
-./build/benchmark_mail annotated.txt
+./build/benchmark_mail annotated.txt 2> full_results.csv
 ```
 
 ## Compile-time benchmark
