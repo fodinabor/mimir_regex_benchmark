@@ -70,13 +70,14 @@ int main(int argc, const char* argv[]) {
                 std::cout << "thorin did wrongly (not) match " << emails[i] << "," << std::boolalpha << isValid[i]
                           << "\n";
     };
-
+#ifdef REGEX_DETERMINISTIC
     benchs["manual"] = [&]() {
         for (int i = 0, e = emails.size(); i < e; ++i)
             if (match_manual(emails[i].c_str()) != isValid[i])
                 std::cout << "manual did wrongly (not) match " << emails[i] << "," << std::boolalpha << isValid[i]
                           << "\n";
     };
+#endif
 
     benchs["ctre"] = [&]() {
         for (int i = 0, e = emails.size(); i < e; ++i)

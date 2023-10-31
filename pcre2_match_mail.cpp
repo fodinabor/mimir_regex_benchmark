@@ -1,19 +1,26 @@
 #include <cstddef>
 #include <cstdio>
 #include <cstring>
+
 #define PCRE2_CODE_UNIT_WIDTH 8
 #define HAVE_CONFIG_H
-
 #include <pcre2.h>
+
+#ifdef REGEX_DETERMINISTIC
+static constexpr const char pattern[]
+    = "^[a-zA-Z0-9](?:[a-zA-Z0-9]*[._\\-]+[a-zA-Z0-9])*[a-zA-Z0-9]*@[a-zA-Z0-9](?:[a-zA-Z0-9]*[_\\-]"
+      "+[a-zA-Z0-9])*[a-zA-"
+      "Z0-9]*\\.(?:(?:[a-zA-Z0-9]*[_\\-]+[a-zA-Z0-9])*[a-zA-Z0-9]+\\.)*[a-zA-Z][a-zA-Z]+$";
+#else
+static constexpr const char pattern[] = "^[a-zA-Z0-9](?:[a-zA-Z0-9.!#$%&'*+\\/=?^_`{|}~\\-]*[a-zA-Z0-9])?"
+                                        "@[a-zA-Z0-9](?:[a-zA-Z0-9\\-]*[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-"
+                                        "Z0-9_\\-]*[a-zA-Z0-9])?)*\\.[a-zA-Z][a-zA-Z]+$";
+#endif
 
 pcre2_code* prepare_pattern() {
     int errornumber    = 0;
     size_t erroroffset = 0;
-    auto re            = pcre2_compile(
-        (PCRE2_SPTR8) "^[a-zA-Z0-9](?:[a-zA-Z0-9]*[._\\-]+[a-zA-Z0-9])*[a-zA-Z0-9]*@[a-zA-Z0-9](?:[a-zA-Z0-9]*[_\\-]"
-                                 "+[a-zA-Z0-9])*[a-zA-"
-                                 "Z0-9]*\\.(?:(?:[a-zA-Z0-9]*[_\\-]+[a-zA-Z0-9])*[a-zA-Z0-9]+\\.)*[a-zA-Z][a-zA-Z]+$",
-        PCRE2_ZERO_TERMINATED, 0, &errornumber, &erroroffset, NULL);
+    auto re = pcre2_compile((PCRE2_SPTR8)pattern, PCRE2_ZERO_TERMINATED, 0, &errornumber, &erroroffset, NULL);
 
     if (re == nullptr) {
         PCRE2_UCHAR buffer[256];
