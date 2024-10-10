@@ -22,14 +22,14 @@ option(REGEX_DETERMINISTIC "Enable to select the deterministic benchmark regex" 
 if(REGEX_DETERMINISTIC)
     add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/mim_match.o
                     COMMAND $<TARGET_FILE:${MIM_TARGET_NAMESPACE}mim> "${CMAKE_SOURCE_DIR}/match_mail.mim" --output-ll "${CMAKE_CURRENT_BINARY_DIR}/mim_match.ll" --aggr-lam-spec
-                    COMMAND ${CMAKE_CXX_COMPILER} -O3 "${CMAKE_CURRENT_BINARY_DIR}/mim_match.ll" -c -o "${CMAKE_CURRENT_BINARY_DIR}/mim_match.o"
+                    COMMAND ${CMAKE_CXX_COMPILER} -O3 -c "${CMAKE_CURRENT_BINARY_DIR}/mim_match.ll" -o "${CMAKE_CURRENT_BINARY_DIR}/mim_match.o"
                     MAIN_DEPENDENCY "${CMAKE_SOURCE_DIR}/match_mail.mim"
                     BYPRODUCTS ${CMAKE_CURRENT_BINARY_DIR}/mim_match.ll)
     set(MIM_MATCH_FILE ${CMAKE_CURRENT_BINARY_DIR}/mim_match.o)
 else()
     add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/mim_match_nondet.o
                     COMMAND $<TARGET_FILE:${MIM_TARGET_NAMESPACE}mim> "${CMAKE_SOURCE_DIR}/match_mail_nondet.mim" --output-ll "${CMAKE_CURRENT_BINARY_DIR}/mim_match_nondet.ll" --aggr-lam-spec
-                    COMMAND ${CMAKE_CXX_COMPILER} -O3 "${CMAKE_CURRENT_BINARY_DIR}/mim_match_nondet.ll" -c -o "${CMAKE_CURRENT_BINARY_DIR}/mim_match_nondet.o"
+                    COMMAND ${CMAKE_CXX_COMPILER} -O3 -c "${CMAKE_CURRENT_BINARY_DIR}/mim_match_nondet.ll" -o "${CMAKE_CURRENT_BINARY_DIR}/mim_match_nondet.o"
                     MAIN_DEPENDENCY "${CMAKE_SOURCE_DIR}/match_mail_nondet.mim"
                     BYPRODUCTS ${CMAKE_CURRENT_BINARY_DIR}/mim_match_nondet.ll)
     set(MIM_MATCH_FILE ${CMAKE_CURRENT_BINARY_DIR}/mim_match_nondet.o)
