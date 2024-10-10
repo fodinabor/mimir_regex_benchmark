@@ -1,7 +1,6 @@
-[submodule "thorin2"]
-	path = thorin2
-	url = https://github.com/AnyDSL/thorin2.git
-	branch = feature/regex-dialect
 [submodule "compile-time-regular-expressions"]
 	path = compile-time-regular-expressions
 	url = https://github.com/hanickadot/compile-time-regular-expressions
+[submodule "mimir"]
+	path = mimir
+	url = https://github.com/AnyDSL/mimir

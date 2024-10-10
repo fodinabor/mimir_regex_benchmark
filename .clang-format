@@ -85,9 +85,9 @@ IncludeCategories:
     Priority:        2
   - Regex:           '<.*>'
     Priority:        3
-  - Regex:           '"thorin/[[:alnum:]]+\.h"'
+  - Regex:           '"mim/[[:alnum:]]+\.h"'
     Priority:        4
-  - Regex:           '"thorin/[[:alnum:]]+/.*"'
+  - Regex:           '"mim/[[:alnum:]]+/.*"'
     Priority:        5
 IncludeIsMainRegex: '(XXX)?$'
 IncludeIsMainSourceRegex: ''

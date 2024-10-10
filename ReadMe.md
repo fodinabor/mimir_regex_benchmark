@@ -1,6 +1,6 @@
-# Thorin2 E-Mail Address RegEx Benchmark
+# MimIR E-Mail Address RegEx Benchmark
 
-This repo contains benchmarks comparing Thorin2's regex dialect performance against, [CTRE](https://github.com/hanickadot/compile-time-regular-expressions), [PCRE2](pcre.org) and `std::regex`.
+This repo contains benchmarks comparing MimIR's regex dialect performance against, [CTRE](https://github.com/hanickadot/compile-time-regular-expressions), [PCRE2](pcre.org) and `std::regex`.
 
 The common theme is to match e-mail addresses harvested from a spam e-mail dataset (https://www.kaggle.com/datasets/rtatman/fraudulent-email-corpus).
 The to-be-matched regex is:
@@ -15,11 +15,11 @@ The to-be-matched regex is:
 ### Init Submodules & Build
 ```sh
 git submodule update --init --recursive
-mkdir -p build && mkdir -p thorin2/build && cd thorin2/build
-cmake .. -DCMAKE_BUILD_TYPE=Release -DTHORIN_BUILD_TESTING=OFF -DTHORIN_INSTALL_DEPENDENCIES=ON -DCMAKE_CXX_COMPILER=g++ -DCMAKE_C_COMPILER=gcc -DCMAKE_INSTALL_PREFIX=`pwd`/install
+mkdir -p build && mkdir -p mimir/build && cd mimir/build
+cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF -DCMAKE_CXX_COMPILER=g++ -DCMAKE_C_COMPILER=gcc -DCMAKE_INSTALL_PREFIX=`pwd`/install
 make -j`nproc` install
 cd ../../build
-cmake .. -DCMAKE_BUILD_TYPE=Release -DThorin_DIR=`pwd`/../thorin2/build/install/lib/cmake/thorin -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang
+cmake .. -DCMAKE_BUILD_TYPE=Release -DMim_DIR=`pwd`/../mimir/build/install/lib/cmake/mim -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang
 make -j`nproc`
 ```
 
@@ -39,5 +39,5 @@ To run the benchmark, provide the benchmark executable with the path to the data
 ## Compile-time benchmark
 For compile-time benchmarking, add `-DREGEX_COMPILE_TIME_BENCHMARK=ON` and ensure that you do not hit any caches, such as `ccache`.
 One way to do so is using the full path to your clang, usually: `/usr/bin/clang++`.
-Also note, that with CMake, there's a rather high overhead. You might want to run `make clean; make -n | grep -E "(clang++|bin/thorin)" | sed "s/^/time /" | bash --verbose` instead.
-Note, for some reason, this unnecessarily compiles the Thorin2 thing twice. That's a build-system issue, not a Thorin limitation.
+Also note, that with CMake, there's a rather high overhead. You might want to run `make clean; make -n benchmark_mail | grep -E "(clang++|bin/mim)" | sed "s/^/time /" | bash --verbose` instead.
+Note, for some reason, this unnecessarily compiles the MimIR thing twice. That's a build-system issue, not a MimIR limitation.

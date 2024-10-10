@@ -22,9 +22,8 @@
             %regex.lit '@',
             domain);
 
-.con .extern match[mem: %mem.M, to_match: %mem.Ptr («⊤:.Nat; .Idx 256», 0), exit : .Cn [%mem.M, .Idx 2]] = {
+.con .extern match[mem: %mem.M, to_match: %mem.Ptr («⊤:.Nat; .Idx 256», 0), exit : .Cn [%mem.M, .Idx 2]] =
     .let (`mem, matched, pos) = re Top (mem, to_match, 0:(.Idx Top));
     .let last_elem_ptr = %mem.lea (Top, <Top; .Idx 256>, 0) (to_match, pos);
     .let (`mem, last_elem) = %mem.load (mem, last_elem_ptr);
-    exit (mem, %core.bit2.and_ 0 (matched, %core.icmp.e (last_elem, 0:I8)))
-};
+    exit (mem, %core.bit2.and_ 0 (matched, %core.icmp.e (last_elem, 0:I8)));

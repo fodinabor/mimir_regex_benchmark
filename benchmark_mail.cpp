@@ -64,10 +64,10 @@ int main(int argc, const char* argv[]) {
     }
 
     std::map<std::string, std::function<void()>> benchs;
-    benchs["thorin"] = [&]() {
+    benchs["mim"] = [&]() {
         for (int i = 0, e = emails.size(); i < e; ++i)
             if (match(emails[i].c_str()) != isValid[i])
-                std::cout << "thorin did wrongly (not) match " << emails[i] << "," << std::boolalpha << isValid[i]
+                std::cout << "mim did wrongly (not) match " << emails[i] << "," << std::boolalpha << isValid[i]
                           << "\n";
     };
 #ifdef REGEX_DETERMINISTIC
